@@ -3,37 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>个人信息卡片</title>
-    <link rel="stylesheet" href="style.css">
+    <title>简易社交分享平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f5f5;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            background: #42b983;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            position: sticky;
+            top: 0;
+        }
+
+        /* 容器 */
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* 发布卡片 */
+        .post-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .post-input {
+            width: 100%;
+            height: 100px;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            resize: none;
+            margin-bottom: 1rem;
+            font-size: 16px;
+        }
+
+        .btn {
+            background: #42b983;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #359469;
+        }
+
+        /* 信息流 */
+        .feed-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .feed-content {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .feed-time {
+            color: #999;
+            font-size: 12px;
+        }
+    </style>
 </head>
 <body>
-    <h1 class="page-title">个人信息卡片</h1>
-    <div class="card">
-        <!-- 头像区域 -->
-        <div class="avatar-section">
-            <img id="avatar-img" src="./image.png" alt="个人头像">
-            <input type="file" id="avatar-upload" accept="image/*" hidden>
-            <label for="avatar-upload" class="upload-btn">上传头像</label>
-        </div>
-
-        <!-- 姓名区域 -->
-        <div class="info-item">
-            <label for="name-input">姓名：</label>
-            <input type="text" id="name-input" placeholder="请输入姓名">
-            <span id="name-display" class="display-text"></span>
-        </div>
-
-        <!-- 个人简介区域 -->
-        <div class="info-item">
-            <label for="bio-input">个人简介：</label>
-            <textarea id="bio-input" placeholder="请输入个人简介"></textarea>
-            <span id="bio-display" class="display-text"></span>
-        </div>
-
-        <!-- 保存按钮 -->
-        <button id="save-btn" class="save-btn">保存</button>
+    <div class="navbar">
+        <h2>简易社交分享平台</h2>
     </div>
 
-    <script src="script.js"></script>
+    <div class="container">
+        <!-- 发布区域 -->
+        <div class="post-card">
+            <textarea id="content" class="post-input" placeholder="分享你的想法..."></textarea>
+            <button class="btn" onclick="publish()">发布分享</button>
+        </div>
+
+        <!-- 信息流 -->
+        <div id="feedList"></div>
+    </div>
+
+    <script>
+        // 初始化数据
+        function getPosts() {
+            let data = localStorage.getItem("posts");
+            return data ? JSON.parse(data) : [];
+        }
+
+        // 保存数据
+        function savePosts(posts) {
+            localStorage.setItem("posts", JSON.stringify(posts));
+        }
+
+        // 发布
+        function publish() {
+            let content = document.getElementById("content").value.trim();
+            
+            // 表单验证
+            if (!content) {
+                alert("请输入分享内容！");
+                return;
+            }
+
+            let newPost = {
+                id: Date.now(),
+                content: content,
+                time: new Date().toLocaleString()
+            };
+
+            let posts = getPosts();
+            posts.unshift(newPost); // 最新放最前面
+            savePosts(posts);
+
+            // 清空输入框
+            document.getElementById("content").value = "";
+            renderList();
+        }
+
+        // 渲染列表
+        function renderList() {
+            let list = document.getElementById("feedList");
+            let posts = getPosts();
+
+            if (posts.length === 0) {
+                list.innerHTML = "<div class='feed-item'>暂无分享，快来发布第一条吧～</div>";
+                return;
+            }
+
+            let html = "";
+            posts.forEach(item => {
+                html += `
+                    <div class="feed-item">
+                        <div class="feed-content">${item.content}</div>
+                        <div class="feed-time">${item.time}</div>
+                    </div>
+                `;
+            });
+            list.innerHTML = html;
+        }
+
+        // 页面加载渲染
+        window.onload = renderList;
+    </script>
 </body>
 </html>
