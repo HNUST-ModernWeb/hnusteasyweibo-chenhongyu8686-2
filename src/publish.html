@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>发布动态</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav">
+      <a href="index.html">首页</a>
+      <a href="publish.html">发布</a>
+      <a href="profile.html">我的</a>
+    </div>
+
+    <h3>分享你的想法</h3>
+    <textarea id="content" placeholder="请输入分享内容..."></textarea>
+    <button class="btn" onclick="doPublish()">发布动态</button>
+  </div>
+
+  <script>
+    // 表单验证（JS 基础交互）
+    function doPublish() {
+      // 获取输入内容
+      let content = document.getElementById("content").value.trim();
+
+      // 验证不能为空
+      if (!content) {
+        alert("请输入内容后再发布！");
+        return;
+      }
+
+      // 发布成功
+      alert("发布成功！");
+      location.href = "index.html"; // 跳回首页
+    }
+  </script>
+</body>
+</html>
